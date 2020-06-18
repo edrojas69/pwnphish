@@ -1,0 +1,57 @@
+version: "3.3"
+
+services:
+    gophish-db:
+        image: mysql
+        hostname: db.${DOMAIN}
+        container_name: db.${DOMAIN}
+        environment:
+            MYSQL_DATABASE: ${DB_NAME}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASS}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOTPASS}
+        volumes:
+            - ./servicios/mysql/:/var/lib/mysql
+        restart: "no"
+        networks:
+          int:
+            aliases:
+              - db.${DOMAIN}
+
+    gophish-docker:
+        build:
+          context: ./docker
+          dockerfile: Dockerfile
+        hostname: gophish.${DOMAIN}
+        container_name: gophish.${DOMAIN}
+        ports:
+          - 80:80
+          - 443:433
+          - 3333:3333
+        environment:
+            DB_NAME: ${DB_NAME}
+            DB_USER: ${DB_USER}
+            DB_PASS: ${DB_PASS}
+            DOMAIN: ${DOMAIN}
+        depends_on:
+          - gophish-db
+        restart: "no"
+        volumes:
+          - ./servicios/gophish:/root/gophish
+        networks:
+          ext:
+            aliases:
+              - gophish.${DOMAIN}
+          int:
+            aliases:
+              - gophish.${DOMAIN}
+networks:
+  ext:
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+  int:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
