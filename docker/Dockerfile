@@ -21,7 +21,7 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get autoremove -y && \
 
 WORKDIR /root/gophish/
 
-RUN wget -q https://github.com/gophish/gophish/releases/download/v0.10.1/gophish-v0.10.1-linux-64bit.zip && \
+RUN wget -q https://github.com/gophish/gophish/releases/download/v0.11.0/gophish-v0.11.0-linux-64bit.zip && \
     unzip gophish-v0.10.1-linux-64bit.zip && \
     chmod +x gophish && \
     rm gophish-v0.10.1-linux-64bit.zip
